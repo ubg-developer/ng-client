@@ -1,0 +1,27 @@
+{
+  "name": "@ubg/ng-client",
+  "description": "Ein Library für Angular-basierte Web-API-Klient",
+  "version": "1.0.0",
+  "keywords": ["UBG", "Angular", "API"],
+  "homepage": "https://github.com/ubg-developer/ng-client",
+  "bugs": {
+    "url": "https://github.com/ubg-developer/ng-client/issues",
+    "email": "attila.nemeth@ubgnet.de"
+  },
+  "license": "unlicensed",
+  "author": {
+    "name": "Attila Németh",
+    "email": "attila.nemeth@ubgnet.de"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ubg-developer/ng-client"
+  },
+  "peerDependencies": {
+    "@angular/common": "^10.0 || ^11.0",
+    "@angular/core": "^10.0 || ^11.0"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0"
+  }
+}
