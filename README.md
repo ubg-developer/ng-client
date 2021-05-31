@@ -2,6 +2,9 @@
 
 ## Ein Library für Angular-basierte Web-API-Klient
 
+[![GitHub release](https://img.shields.io/github/release/ubg-developer/ng-client.svg)](https://GitHub.com/ubg-developer/ng-client/releases/)
+[![GitHub issues](https://img.shields.io/github/issues/ubg-developer/ng-client.svg)](https://GitHub.com/ubg-developer/ng-client/issues/)
+
 **Diese Library kann verwendet werden uner Angular 10 or 11, und auch in Ionic 5**
 
 Das modul soll importiert werden. Es reicht nicht, das Modul zu importieren, Providers sind ebenso wichtig,
