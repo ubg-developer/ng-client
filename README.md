@@ -46,7 +46,7 @@ export class AppModule {}
 
 ### Ionic-Beispiel
 ```
-npm i @attus/ionic-storage
+npm i @ubg/io-token
 ```
 ```ts
 import { AngularClientModule } from '@ubg/ng-client';
