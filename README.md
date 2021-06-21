@@ -16,17 +16,18 @@ Noch dazu ist sehr wichtig, unter Environments die Verbindungsdaten einzurichten
 ### Angular
 
 ```
-npm i @attus/cookie-service
+npm i @ubg/ng-cookie-service
 ```
 ```ts
-import { AngularClientModule } from '@attus/angular-client';
-import { CookieTokenServiceService } from '@attus/cookie-service';
+import { AngularClientModule } from '@ubg/ng-client';
+import { CookieServiceModule, CookieTokenService } from '@ubg/ng-cookie-service';
 
 import { environment } from '../environments/environment';
 
 @NgModule({
   imports: [
     AngularClientModule,
+    CookieServiceModule,
   ],
   providers: [
     {
@@ -43,13 +44,13 @@ import { environment } from '../environments/environment';
 export class AppModule {}
 ```
 
-### Ionic Example
+### Ionic-Beispiel
 ```
 npm i @attus/ionic-storage
 ```
 ```ts
-import { AngularClientModule } from '@attus/angular-client';
-import { IonicDataStorageModule, IonicTokenService } from '@attus/ionic-storage';
+import { AngularClientModule } from '@ubg/ng-client';
+import { IoTokenModule, IoTokenService } from '@ubg/io-token';
 
 import { environment } from '../environments/environment';
 
@@ -57,13 +58,13 @@ import { environment } from '../environments/environment';
   imports: [
     IonicModule.forRoot(),
     AngularClientModule,
-    IonicDataStorageModule,
+    IoTokenModule,
   ],
   providers: [
     IonicTokenService,
     {
       provide: 'ANGULAR_CLIENT_TOKEN_SERVICE',
-      useClass: IonicTokenService,
+      useClass: IoTokenService,
     },
     {
       provide: 'ANGULAR_CLIENT_CONFIG',
@@ -75,7 +76,7 @@ import { environment } from '../environments/environment';
 export class AppModule {}
 ```
 
-Environment must have API connection parameters:
+Environment muss die API-Parametern beinhalten:
 ```ts
 export const environment = {
   production: false,
@@ -89,7 +90,7 @@ export const environment = {
 };
 ```
 
-## Usage
+## Anwendung
 
 ```ts
 

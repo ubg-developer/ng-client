@@ -1,7 +1,7 @@
 {
   "name": "@ubg/ng-client",
   "description": "Ein Library für Angular-basierte Web-API-Klient",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "keywords": [
     "UBG",
     "Angular",
@@ -19,8 +19,8 @@
     "url": "git+https://github.com/ubg-developer/ng-client.git"
   },
   "peerDependencies": {
-    "@angular/common": "^10.0 || ^11.0",
-    "@angular/core": "^10.0 || ^11.0"
+    "@angular/common": "^10.0 || ^11.0|| ^12.0",
+    "@angular/core": "^10.0 || ^11.0|| ^12.0"
   },
   "dependencies": {
     "tslib": "^2.0.0"

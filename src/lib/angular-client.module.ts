@@ -9,7 +9,6 @@ import { AngularClient } from './angular-client.service';
     HttpClientModule,
   ],
   providers: [
-    AngularClient,
     {
       provide: APP_INITIALIZER,
       useFactory: function(client: AngularClient) {
@@ -22,4 +21,4 @@ import { AngularClient } from './angular-client.service';
     }
   ]
 })
-export class AngularClientModule { }
+export class AngularClientModule {}
