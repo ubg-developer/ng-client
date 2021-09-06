@@ -237,7 +237,10 @@ export class AngularClient {
           errorDetails = error.statusText + ': ' + error.error['errors'][i]['detail'];
         }
         if (errorDetails !== null) {
-          return throwError(errorDetails);
+          return throwError({
+            status: error.status,
+            message: errorDetails,
+          });
         }
         return throwError({
           status: error.status,
