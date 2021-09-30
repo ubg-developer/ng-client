@@ -100,7 +100,14 @@ export class AngularClient {
     return this.http.get(this.getUrl(path), httpOptions).pipe(
       retry(requestOptions.retry),
       timeout(requestOptions.timeout),
-      catchError(this.formatErrors),
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401 || error.status === 403) {
+          this.tokenService.getAccessToken().then(token => {
+            this.authorization = token;
+          });
+        }
+        return this.formatErrors(error);
+      }),
     );
   }
 
@@ -121,7 +128,14 @@ export class AngularClient {
     return this.http.post(this.getUrl(path), data, httpOptions).pipe(
       retry(requestOptions.retry),
       timeout(requestOptions.timeout),
-      catchError(this.formatErrors),
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401 || error.status === 403) {
+          this.tokenService.getAccessToken().then(token => {
+            this.authorization = token;
+          });
+        }
+        return this.formatErrors(error);
+      }),
     );
   }
 
@@ -142,7 +156,14 @@ export class AngularClient {
     return this.http.patch(this.getUrl(path), data, httpOptions).pipe(
       retry(requestOptions.retry),
       timeout(requestOptions.timeout),
-      catchError(this.formatErrors),
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401 || error.status === 403) {
+          this.tokenService.getAccessToken().then(token => {
+            this.authorization = token;
+          });
+        }
+        return this.formatErrors(error);
+      }),
     );
   }
 
@@ -161,7 +182,14 @@ export class AngularClient {
     return this.http.delete(this.getUrl(path), httpOptions).pipe(
       retry(requestOptions.retry),
       timeout(requestOptions.timeout),
-      catchError(this.formatErrors),
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401 || error.status === 403) {
+          this.tokenService.getAccessToken().then(token => {
+            this.authorization = token;
+          });
+        }
+        return this.formatErrors(error);
+      }),
     );
   }
 
@@ -201,6 +229,7 @@ export class AngularClient {
       catchError(error => {
         this.userLoginStatus.next(-1);
         this.authorization = null;
+        this.tokenService.deleteAccessToken();
         this.tokenService.deleteRefreshToken().then(() => {
           console.info('Veraltetes Refresh Token wurde entfernt');
         });
@@ -208,6 +237,7 @@ export class AngularClient {
       }),
     ).subscribe((response: AngularClientTokenResponse) => {
       this.authorization = response.token_type + ' ' + response.access_token;
+      this.tokenService.setAccessToken(response.token_type + ' ' + response.access_token);
       this.tokenService.setRefreshToken(response.refresh_token);
       this.refreshTimeout = setTimeout(() => {
         this.refreshToken();
@@ -215,6 +245,10 @@ export class AngularClient {
       console.info('Access Token Updated');
       this.userLoginStatus.next(1);
     });
+  }
+
+  private updateAccessToken(error: HttpErrorResponse): void {
+    console.debug(error);
   }
 
   private formatErrors(error: HttpErrorResponse) {
