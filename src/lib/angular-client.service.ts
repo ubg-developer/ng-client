@@ -224,8 +224,8 @@ export class AngularClient {
       formData.set(key, request[key]);
     }
     this.http.post(this.clientConfig.url + '/' + this.clientConfig.token_path, formData).pipe(
-      retry(3),
-      timeout(16000),
+      retry(1),
+      timeout(12000),
       catchError(error => {
         this.userLoginStatus.next(-1);
         this.authorization = null;
@@ -282,8 +282,15 @@ export class AngularClient {
         });
         break;
       case 401:
+        console.warn('401 Nicht Angemeldet');
+        this.userLoginStatus.next(-1);
+        this.authorization = null;
+        this.tokenService.deleteAccessToken();
+        this.tokenService.deleteRefreshToken().then(() => {
+          console.info('Veraltetes Refresh Token wurde entfernt');
+        });
         return throwError({
-          status: 403,
+          status: 401,
           message: 'Nicht angemeldet'
         });
       case 403:
