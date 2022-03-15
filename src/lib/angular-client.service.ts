@@ -53,6 +53,27 @@ export class AngularClient {
   }
 
   /**
+   * Anmeldung durch CDUplus
+   * @param code 
+   * @param clientId 
+   * @param clientSecret 
+   * @param scope 
+   */
+  loginCduplus(code: string, clientId: string, clientSecret: string, scope: string): void {
+    const request: AngularClientTokenRequest = {
+      grant_type: 'cduplus',
+      client_id: this.clientConfig.client_id,
+      client_secret: this.clientConfig.client_secret,
+      scope: this.clientConfig.scope,
+      code: code,
+      cduplus_client: clientId,
+      cduplus_secret: clientSecret,
+      cduplus_scope: scope,
+    };
+    this.getToken(request);
+  }
+
+  /**
    * User Logout
    *
    * Access and Refresh Tokens are removed
