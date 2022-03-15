@@ -32,7 +32,7 @@ import { environment } from '../environments/environment';
   providers: [
     {
       provide: 'ANGULAR_CLIENT_TOKEN_SERVICE',
-      useClass: CookieTokenServiceService,
+      useClass: CookieTokenService,
     },
     {
       provide: 'ANGULAR_CLIENT_CONFIG',
