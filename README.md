@@ -142,3 +142,8 @@ export class MyComponent implements OnInit {
 
 }
 ```
+
+Neu in der Version 1.6 ist Anmeldung durch CDUplus:
+```ts
+this.apiClient.loginCduplus(code, clientId, clientSecret, 'profile offline_access cduplus_auth openid email');
+```
