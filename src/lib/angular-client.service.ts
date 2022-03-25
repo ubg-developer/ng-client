@@ -218,7 +218,6 @@ export class AngularClient {
 
   private getToken(request: AngularClientTokenRequest): void {
     console.info('Requesting Access Token...');
-    this.userLoginStatus.next(0);
     const formData = new FormData();
     for (let key in request) {
       formData.set(key, request[key]);
@@ -243,7 +242,9 @@ export class AngularClient {
         this.refreshToken();
       }, (response.expires_in - 30) * 1000);
       console.info('Access Token Updated');
-      this.userLoginStatus.next(1);
+      if (this.userLoginStatus.value !== 1) {
+        this.userLoginStatus.next(1);
+      }
     });
   }
 
@@ -283,12 +284,6 @@ export class AngularClient {
         break;
       case 401:
         console.warn('401 Nicht Angemeldet');
-        this.userLoginStatus.next(-1);
-        this.authorization = null;
-        this.tokenService.deleteAccessToken();
-        this.tokenService.deleteRefreshToken().then(() => {
-          console.info('Veraltetes Refresh Token wurde entfernt');
-        });
         return throwError({
           status: 401,
           message: 'Nicht angemeldet'
