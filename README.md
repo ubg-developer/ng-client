@@ -5,7 +5,7 @@
 [![GitHub release](https://img.shields.io/github/release/ubg-developer/ng-client.svg)](https://GitHub.com/ubg-developer/ng-client/releases/)
 [![GitHub issues](https://img.shields.io/github/issues/ubg-developer/ng-client.svg)](https://GitHub.com/ubg-developer/ng-client/issues/)
 
-**Diese Library Version ist kompatibel mit Angular 10 und 11 (Ionic 5 inbegriffen)**
+**Diese Library Version ist kompatibel mit Angular 13**
 
 Das Modul soll importiert werden. Es reicht nicht, das Modul zu importieren, Providers sind ebenso wichtig,
 siehe das Beispiel unten. Es ist zusätzlich nötig, ein Token-Service einzurichten, praktisch ist Cookie-Service
