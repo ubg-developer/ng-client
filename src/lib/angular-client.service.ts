@@ -53,6 +53,27 @@ export class AngularClient {
   }
 
   /**
+   * Anmeldung durch CDUplus
+   * @param code 
+   * @param clientId 
+   * @param clientSecret 
+   * @param scope 
+   */
+  loginCduplus(code: string, clientId: string, clientSecret: string, scope: string): void {
+    const request: AngularClientTokenRequest = {
+      grant_type: 'cduplus',
+      client_id: this.clientConfig.client_id,
+      client_secret: this.clientConfig.client_secret,
+      scope: this.clientConfig.scope,
+      code: code,
+      cduplus_client: clientId,
+      cduplus_secret: clientSecret,
+      cduplus_scope: scope,
+    };
+    this.getToken(request);
+  }
+
+  /**
    * User Logout
    *
    * Access and Refresh Tokens are removed
@@ -217,7 +238,7 @@ export class AngularClient {
   }
 
   private getToken(request: AngularClientTokenRequest): void {
-    console.info('Requesting Access Token...');
+    console.info('Zugriffstoken wird angefragt...');
     const formData = new FormData();
     for (let key in request) {
       formData.set(key, request[key]);
@@ -241,15 +262,12 @@ export class AngularClient {
       this.refreshTimeout = setTimeout(() => {
         this.refreshToken();
       }, (response.expires_in - 30) * 1000);
-      console.info('Access Token Updated');
+      console.info('Das Token wurde aktualisiert.');
       if (this.userLoginStatus.value !== 1) {
+        // Anmelden, aber nur wenn er bisher nicht angemeldet war.
         this.userLoginStatus.next(1);
       }
     });
-  }
-
-  private updateAccessToken(error: HttpErrorResponse): void {
-    console.debug(error);
   }
 
   private formatErrors(error: HttpErrorResponse) {

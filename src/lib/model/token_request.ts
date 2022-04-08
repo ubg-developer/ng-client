@@ -9,6 +9,12 @@ export interface AngularClientTokenRequest {
   refresh_token?: string
   scope?: string
 
+  // CDUplus-Anmeldung
+  code?: string
+  cduplus_client?: string
+  cduplus_secret?: string
+  cduplus_scope?: string
+
 }
 
 export interface AngularClientTokenResponse {
