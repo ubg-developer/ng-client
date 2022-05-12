@@ -245,20 +245,50 @@ export class AngularClient {
     }
     this.http.post(this.clientConfig.url + '/' + this.clientConfig.token_path, formData).pipe(
       retry(1),
-      timeout(12000),
+      timeout(60000),
       catchError(error => {
-        this.userLoginStatus.next(-1);
-        this.authorization = null;
-        this.tokenService.deleteAccessToken();
-        this.tokenService.deleteRefreshToken().then(() => {
-          console.info('Veraltetes Refresh Token wurde entfernt');
-        });
-        return this.formatErrors(error);
+        if (error instanceof TimeoutError) {
+          // Timeout
+          console.warn('Timeout bei der Token-Anfrage');
+          return throwError({
+            status: -1,
+            message: 'Timeout'
+          });
+        }
+        else if (error.status <= 0) {
+          // Netzwerkfehler
+          // Tokens werden nicht entfernt
+          console.warn('Netzwerkfehler bei der Token-Anfrage');
+          console.info('Es wird wieder versucht');
+          if (this.refreshTimeout !== null && this.refreshTimeout !== undefined) {
+            clearTimeout(this.refreshTimeout);
+          }
+          this.refreshTimeout = setTimeout(() => {
+            this.refreshToken();
+          }, 1500);
+          return throwError({
+            status: 0,
+            message: 'Netzwerkfehler'
+          });
+        }
+        else {
+          // Anmeldungsfehler
+          this.userLoginStatus.next(-1);
+          this.authorization = null;
+          this.tokenService.deleteAccessToken();
+          this.tokenService.deleteRefreshToken().then(() => {
+            console.info('Veraltetes Refresh Token wurde entfernt');
+          });
+          return this.formatErrors(error);
+        }
       }),
     ).subscribe((response: AngularClientTokenResponse) => {
       this.authorization = response.token_type + ' ' + response.access_token;
       this.tokenService.setAccessToken(response.token_type + ' ' + response.access_token);
       this.tokenService.setRefreshToken(response.refresh_token);
+      if (this.refreshTimeout !== null && this.refreshTimeout !== undefined) {
+        clearTimeout(this.refreshTimeout);
+      }
       this.refreshTimeout = setTimeout(() => {
         this.refreshToken();
       }, (response.expires_in - 30) * 1000);
@@ -279,6 +309,12 @@ export class AngularClient {
       });
     }
     switch (error.status) {
+      case 0:
+        console.warn('Keine Verbindung');
+        return throwError({
+          status: 0,
+          message: 'Keine Verbindung'
+        });
       case 422:
       case 500:
         console.warn(error.statusText);
