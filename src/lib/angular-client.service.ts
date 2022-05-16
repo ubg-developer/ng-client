@@ -22,6 +22,7 @@ export class AngularClient {
   private userLoginStatus: BehaviorSubject<number> = new BehaviorSubject(0)
   private authorization: string = null
   private refreshTimeout: any = null
+  private lastRefresh: number = 0
 
   constructor(private http: HttpClient,
               @Inject('ANGULAR_CLIENT_TOKEN_SERVICE') private tokenService: AngularClientTokenService,
@@ -123,9 +124,12 @@ export class AngularClient {
       timeout(requestOptions.timeout),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401 || error.status === 403) {
+          /*
           this.tokenService.getAccessToken().then(token => {
             this.authorization = token;
           });
+          */
+         this.refreshToken();
         }
         return this.formatErrors(error);
       }),
@@ -151,9 +155,12 @@ export class AngularClient {
       timeout(requestOptions.timeout),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401 || error.status === 403) {
+          /*
           this.tokenService.getAccessToken().then(token => {
             this.authorization = token;
           });
+          */
+         this.refreshToken();
         }
         return this.formatErrors(error);
       }),
@@ -179,9 +186,12 @@ export class AngularClient {
       timeout(requestOptions.timeout),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401 || error.status === 403) {
+          /*
           this.tokenService.getAccessToken().then(token => {
             this.authorization = token;
           });
+          */
+         this.refreshToken();
         }
         return this.formatErrors(error);
       }),
@@ -205,9 +215,12 @@ export class AngularClient {
       timeout(requestOptions.timeout),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401 || error.status === 403) {
+          /*
           this.tokenService.getAccessToken().then(token => {
             this.authorization = token;
           });
+          */
+         this.refreshToken();
         }
         return this.formatErrors(error);
       }),
@@ -263,9 +276,15 @@ export class AngularClient {
           if (this.refreshTimeout !== null && this.refreshTimeout !== undefined) {
             clearTimeout(this.refreshTimeout);
           }
+          let tt: number = 1500;
+          const now: Date = new Date();
+          if (now.getTime() < this.lastRefresh + 10000) {
+            tt = 20000;
+          }
           this.refreshTimeout = setTimeout(() => {
             this.refreshToken();
-          }, 1500);
+          }, tt);
+          this.lastRefresh = now.getTime();
           return throwError({
             status: 0,
             message: 'Netzwerkfehler'
