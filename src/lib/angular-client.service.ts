@@ -20,6 +20,7 @@ import { AngularClientTokenService } from './model/token_service';
 export class AngularClient {
 
   private userLoginStatus: BehaviorSubject<number> = new BehaviorSubject(0)
+  private loginRequestStatus: BehaviorSubject<number> = new BehaviorSubject(0);
   private authorization: string = null
   private refreshTimeout: any = null
   private lastRefresh: number = 0
@@ -95,6 +96,14 @@ export class AngularClient {
    */
   getUserLoginStatus(): Observable<number> {
     return this.userLoginStatus.asObservable();
+  }
+
+  /**
+   * Anmeldungsstatus. Das Ergebnis des Anmeldungsprozesses
+   * @returns number
+   */
+  getLoginRequestStatus(): Observable<number> {
+    return this.loginRequestStatus.asObservable();
   }
 
   /**
@@ -251,6 +260,7 @@ export class AngularClient {
   }
 
   private getToken(request: AngularClientTokenRequest): void {
+    this.loginRequestStatus.next(0);
     console.info('Zugriffstoken wird angefragt...');
     const formData = new FormData();
     for (let key in request) {
@@ -267,6 +277,7 @@ export class AngularClient {
             status: -1,
             message: 'Timeout'
           });
+          this.loginRequestStatus.next(-1);
         }
         else if (error.status <= 0) {
           // Netzwerkfehler
@@ -292,6 +303,7 @@ export class AngularClient {
         }
         else {
           // Anmeldungsfehler
+          this.loginRequestStatus.next(-1);
           this.userLoginStatus.next(-1);
           this.authorization = null;
           this.tokenService.deleteAccessToken();
@@ -316,6 +328,7 @@ export class AngularClient {
         // Anmelden, aber nur wenn er bisher nicht angemeldet war.
         this.userLoginStatus.next(1);
       }
+      this.loginRequestStatus.next(1);
     });
   }
 
