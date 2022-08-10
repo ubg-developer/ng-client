@@ -277,7 +277,6 @@ export class AngularClient {
             status: -1,
             message: 'Timeout'
           });
-          this.loginRequestStatus.next(-1);
         }
         else if (error.status <= 0) {
           // Netzwerkfehler
@@ -303,7 +302,9 @@ export class AngularClient {
         }
         else {
           // Anmeldungsfehler
-          this.loginRequestStatus.next(-1);
+          if (request.grant_type === 'password') {
+            this.loginRequestStatus.next(-1);
+          }
           this.userLoginStatus.next(-1);
           this.authorization = null;
           this.tokenService.deleteAccessToken();
@@ -328,7 +329,9 @@ export class AngularClient {
         // Anmelden, aber nur wenn er bisher nicht angemeldet war.
         this.userLoginStatus.next(1);
       }
-      this.loginRequestStatus.next(1);
+      if (request.grant_type === 'password') {
+        this.loginRequestStatus.next(1);
+      }
     });
   }
 
