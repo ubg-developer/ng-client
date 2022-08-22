@@ -1,7 +1,7 @@
 {
   "name": "@ubg/ng-client",
   "description": "Ein Library für Angular-basierte Web-API-Klient",
-  "version": "13.0.0",
+  "version": "13.1.0",
   "keywords": [
     "UBG",
     "Angular",
