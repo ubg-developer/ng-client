@@ -265,7 +265,6 @@ export class AngularClient {
 
   private getToken(request: AngularClientTokenRequest): void {
     this.loginRequestStatus.next(0);
-    console.info('Zugriffstoken wird angefragt...');
     const formData = new FormData();
     Object.entries(request).forEach(([key, value]) => formData.append(key, value));
     this.http.post<AngularClientTokenResponse>(this.clientConfig.url + '/' + this.clientConfig.token_path, formData).pipe(

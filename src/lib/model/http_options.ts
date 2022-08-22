@@ -6,6 +6,8 @@ export class AngularClientHttpOptions {
   params: HttpParams
   responseType: any
   authorization: string
+  reportProgress: boolean = false
+  observe?: any
 
   constructor(authorization: string) {
     this.authorization = authorization;
