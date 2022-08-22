@@ -3,12 +3,13 @@ import { HttpHeaders, HttpParams } from "@angular/common/http";
 export class AngularClientHttpOptions {
 
   headers: HttpHeaders = new HttpHeaders()
-  params: HttpParams = null
-  responseType = null
+  params: HttpParams
+  responseType: any
   authorization: string
 
   constructor(authorization: string) {
     this.authorization = authorization;
+    this.params = new HttpParams;
   }
 
   /**

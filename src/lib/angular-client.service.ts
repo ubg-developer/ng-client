@@ -21,7 +21,7 @@ export class AngularClient {
 
   private userLoginStatus: BehaviorSubject<number> = new BehaviorSubject(0)
   private loginRequestStatus: BehaviorSubject<number> = new BehaviorSubject(0);
-  private authorization: string = null
+  private authorization: string|null = null
   private refreshTimeout: any = null
   private lastRefresh: number = 0
 
@@ -110,7 +110,13 @@ export class AngularClient {
    * A new HTTP Options instance. These options may be applied in HTTP Requests
    */
   getHttpOptions(): AngularClientHttpOptions {
-    const options = new AngularClientHttpOptions(this.authorization);
+    let options;
+    if (this.authorization !== null && this.authorization !== undefined) {
+      options = new AngularClientHttpOptions(this.authorization);
+    }
+    else {
+      options = new AngularClientHttpOptions('');
+    }
     return options;
   }
 
@@ -128,16 +134,14 @@ export class AngularClient {
       requestOptions = new AngularClientRequestOptions;
       requestOptions.retry = 5;
     }
+    if (httpOptions === null || httpOptions === undefined) {
+      httpOptions = this.getHttpOptions();
+    }
     return this.http.get(this.getUrl(path), httpOptions).pipe(
       retry(requestOptions.retry),
       timeout(requestOptions.timeout),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401 || error.status === 403) {
-          /*
-          this.tokenService.getAccessToken().then(token => {
-            this.authorization = token;
-          });
-          */
          this.refreshToken();
         }
         return this.formatErrors(error);
@@ -263,10 +267,8 @@ export class AngularClient {
     this.loginRequestStatus.next(0);
     console.info('Zugriffstoken wird angefragt...');
     const formData = new FormData();
-    for (let key in request) {
-      formData.set(key, request[key]);
-    }
-    this.http.post(this.clientConfig.url + '/' + this.clientConfig.token_path, formData).pipe(
+    Object.entries(request).forEach(([key, value]) => formData.append(key, value));
+    this.http.post<AngularClientTokenResponse>(this.clientConfig.url + '/' + this.clientConfig.token_path, formData).pipe(
       retry(1),
       timeout(60000),
       catchError(error => {
@@ -354,7 +356,7 @@ export class AngularClient {
       case 500:
         console.warn(error.statusText);
         console.warn(error.message);
-        let errorDetails: string = null
+        let errorDetails: string|null = null
         for (let i in error.error['errors']) {
           console.warn('--', error.error['errors'][i]['status'],
                                 error.error['errors'][i]['detail']);
